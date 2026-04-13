@@ -1921,7 +1921,7 @@ function refreshEntryState(){
   const accessStatus = document.getElementById('accessStatus');
   if(!btnEnter) return;
 
-  let canEnter = !!mainDataLoaded;
+  let canEnter = true;
   let stateText = 'Global profile selected';
   let note = accessMatrixLoaded
     ? 'User matrix loaded. Validate a scoped user if needed.'
@@ -1941,7 +1941,7 @@ function refreshEntryState(){
     stateText = `Validated: ${currentUser.mail}`;
   }
 
-  btnEnter.disabled = false;
+  btnEnter.disabled = !canEnter;
   if(loginStateText) loginStateText.textContent = stateText;
   if(accessStatus) accessStatus.textContent = note;
 }
@@ -2662,15 +2662,7 @@ function wireStart(){
     if(!loaded) return;
     enterApp();
   });
-  fetchFirstAvailable(buildPublishedCandidates('data/base/LINELIST SS27.xlsx')).then(({ response, url }) => {
-    return response.arrayBuffer().then(buf => ({ buf, url }));
-  }).then(({ buf, url }) => {
-    processMainWorkbookArrayBuffer(buf, status, btnEnter);
-    status.innerHTML += `<br/><span class="small">Source: ${url}</span>`;
-  }).catch(() => {
-    status.textContent = 'Published base not found. Admin can load the same Excel from Admin tools.';
-    refreshEntryState();
-  });
+  status.textContent = 'Base ready to load on enter.';
   fetchFirstAvailable(buildPublishedCandidates('data/usuarios/usuarios.xlsx')).then(({ response }) => {
     return response.arrayBuffer();
   }).then(buf => {
@@ -2680,14 +2672,7 @@ function wireStart(){
     if(accessStatus) accessStatus.textContent = 'Published access matrix not found. Only scoped users need it.';
     refreshEntryState();
   });
-  fetchFirstAvailable(buildPublishedCandidates('data/historico/historico_cliente_banner.xlsx')).then(({ response }) => {
-    return response.arrayBuffer();
-  }).then(buf => {
-    processHistoryWorkbookArrayBuffer(buf, $('#historyStatus'));
-  }).catch(() => {
-    setHistoryStatus('Published historical workbook not found yet. Add historico_cliente_banner.xlsx to enable client/banner metrics.', 'warn');
-    hydrateVisibilitySelectors();
-  });
+  setHistoryStatus('Historical workbook will load after login and base load.', 'info');
   refreshEntryState();
 }
 
