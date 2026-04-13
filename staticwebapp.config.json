@@ -1,0 +1,28 @@
+{
+  "navigationFallback": {
+    "rewrite": "/adiview.html",
+    "exclude": [
+      "/Images/*",
+      "/*.xlsx",
+      "/api/*"
+    ]
+  },
+  "routes": [
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/*.xlsx",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/Images/*",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "globalHeaders": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Content-Type-Options": "nosniff"
+  }
+}
